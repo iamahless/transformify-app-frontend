@@ -1,83 +1,81 @@
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router";
 import Select from 'react-select';
 
-// Utility functions
-const formatDateTime = (dt) => dt.replace('T', ' ');
-const pad = (n) => n.toString().padStart(2, '0');
-const getMinDate = () => {
-	const today = new Date();
-	return `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}T${pad(today.getHours())}:${pad(today.getMinutes())}`;
-};
-
-const initialFormState = {
-	title: "",
-	description: "",
-	schedulerName: "",
-	schedulerEmail: "",
-	startAt: "",
-	endAt: "",
-	participants: [],
-};
-
-function CreateAppointment({ open, setOpen, fetchAppointments }) {
-	const [form, setForm] = useState(initialFormState);
+function UpdateAppointment({ open, setOpen, fetchAppointments, appointment }) {
+	const [form, setForm] = useState({
+		title: appointment?.title || "",
+		description: appointment?.description || "",
+		schedulerName: appointment?.scheduler_name || "",
+		schedulerEmail: appointment?.scheduler_email || "",
+		startAt: appointment?.start_at || "",
+		endAt: appointment?.end_at || "",
+		participants: appointment?.participants?.map(p => p.id) || [],
+	});
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const [participants, setParticipants] = useState([]);
+
 	const navigate = useNavigate();
 
-	const participantOptions = useMemo(
-		() => participants.map(({ id, name }) => ({ value: id, label: name })),
-		[participants]
-	);
-
-	useEffect(() => {
-		const fetchParticipants = async () => {
-			setLoading(true);
-			try {
-				const response = await fetch("http://appointment-app-backend.test/participants", {
-					method: "GET",
-					headers: { "Content-Type": "application/json" },
-				});
-				const data = await response.json();
-				setParticipants(data.participants || []);
-			} catch {
-				setError("Failed to load participants.");
-			} finally {
-				setLoading(false);
-			}
-		};
-		fetchParticipants();
-	}, []);
+	const formatDateTime = (dt) => dt.replace('T', ' ');
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setForm((prev) => ({ ...prev, [name]: value }));
+		setForm((prev) => ({
+			...prev,
+			[name]: value,
+		}));
 	};
 
 	const handleParticipantsChange = (selectedOptions) => {
 		setForm((prev) => ({
 			...prev,
-			participants: selectedOptions ? selectedOptions.map(item => item.value) : [],
+			participants: selectedOptions ? selectedOptions.map(opt => opt.value) : [],
 		}));
 	};
 
-	const handleClose = () => {
-		setOpen(false);
-		setError(null);
-		setForm(initialFormState);
+	const fetchParticipants = async () => {
+		setLoading(true);
+		try {
+			const response = await fetch("http://appointment-app-backend.test/participants", {
+				method: "GET",
+				headers: { "Content-Type": "application/json" },
+			});
+			const data = await response.json();
+			setParticipants(data.participants || []);
+		} catch {
+			setError("Failed to fetch participants.");
+		} finally {
+			setLoading(false);
+		}
 	};
+
+	useEffect(() => {
+		fetchParticipants();
+		// Reset form when appointment changes
+		setForm({
+			title: appointment?.title || "",
+			description: appointment?.description || "",
+			schedulerName: appointment?.scheduler_name || "",
+			schedulerEmail: appointment?.scheduler_email || "",
+			startAt: appointment?.start_at || "",
+			endAt: appointment?.end_at || "",
+			participants: appointment?.participants?.map(p => p.id) || [],
+		});
+
+	}, [appointment]);
 
 	const submitHandle = async (event) => {
 		event.preventDefault();
 		setError(null);
 		setLoading(true);
+
 		try {
-			const response = await fetch("http://appointment-app-backend.test/appointments", {
-				method: "POST",
+			const response = await fetch(`http://appointment-app-backend.test/appointments/${appointment.id}`, {
+				method: "PATCH",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					title: form.title,
@@ -89,24 +87,28 @@ function CreateAppointment({ open, setOpen, fetchAppointments }) {
 					end_at: formatDateTime(form.endAt),
 				}),
 			});
-			if (!response.ok) {
+
+			if (response.ok) {
+				setOpen(false);
+				if (fetchAppointments) await fetchAppointments();
+				navigate("/appointments/");
+			} else {
 				const data = await response.json();
-				throw new Error(data?.message || "Failed to create appointment.");
+				setError(data?.message || `Failed to update ${appointment.id} appointment.`);
 			}
-			handleClose();
-			if (fetchAppointments) await fetchAppointments();
-			navigate("/appointments/");
-		} catch (err) {
-			setError(err.message);
+		} catch {
+			setError("Network error.");
 		} finally {
 			setLoading(false);
 		}
 	};
 
-	const minDate = getMinDate();
+	const today = new Date();
+	const pad = (n) => n.toString().padStart(2, '0');
+	const minDate = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}T${pad(today.getHours())}:${pad(today.getMinutes())}`;
 
 	return (
-		<Dialog open={open} onClose={handleClose} className="relative z-10">
+		<Dialog open={open} onClose={setOpen} className="relative z-10">
 			<DialogBackdrop
 				transition
 				className="fixed inset-0 bg-gray-500/75 transition-opacity duration-500 ease-in-out data-closed:opacity-0"
@@ -124,15 +126,17 @@ function CreateAppointment({ open, setOpen, fetchAppointments }) {
 									<div className="bg-gray-50 px-4 py-6 sm:px-6">
 										<div className="flex items-start justify-between space-x-3">
 											<div className="space-y-1">
-												<DialogTitle className="text-base font-semibold text-gray-900">New Appointment</DialogTitle>
+												<DialogTitle className="text-base font-semibold text-gray-900">
+													Update {appointment?.title} Appointment
+												</DialogTitle>
 												<p className="text-sm text-gray-500">
-													Get started by filling in the information below to create your new appointment.
+													Fill in the details of the appointment and click on update.
 												</p>
 											</div>
 											<div className="flex h-7 items-center">
 												<button
 													type="button"
-													onClick={handleClose}
+													onClick={() => setOpen(false)}
 													className="relative text-gray-400 hover:text-gray-500"
 												>
 													<span className="absolute -inset-2.5" />
@@ -234,12 +238,18 @@ function CreateAppointment({ open, setOpen, fetchAppointments }) {
 												<Select
 													id="participants-select"
 													isMulti
-													options={participantOptions}
+													value={participants
+														.filter(p => form.participants.includes(p.id))
+														.map(p => ({ value: p.id, label: p.name }))
+													}
+													options={participants.map(participant => ({
+														value: participant.id,
+														label: participant.name,
+													}))}
 													onChange={handleParticipantsChange}
 													isLoading={loading}
 													isClearable
 													placeholder="Select participants..."
-													value={participantOptions.filter(option => form.participants.includes(option.value))}
 												/>
 											</div>
 										</div>
@@ -290,7 +300,7 @@ function CreateAppointment({ open, setOpen, fetchAppointments }) {
 									<div className="flex justify-end space-x-3">
 										<button
 											type="button"
-											onClick={handleClose}
+											onClick={() => setOpen(false)}
 											className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
 											disabled={loading}
 										>
@@ -301,7 +311,7 @@ function CreateAppointment({ open, setOpen, fetchAppointments }) {
 											disabled={loading}
 											className="inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50"
 										>
-											{loading ? "Creating..." : "Create"}
+											{loading ? "Updating..." : "Update"}
 										</button>
 									</div>
 								</div>
@@ -314,4 +324,4 @@ function CreateAppointment({ open, setOpen, fetchAppointments }) {
 	);
 }
 
-export default CreateAppointment;
+export default UpdateAppointment;

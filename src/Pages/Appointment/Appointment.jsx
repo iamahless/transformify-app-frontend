@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import CreateAppointment from "../../Components/Drawers/CreateAppointment";
+import UpdateAppointment from "../../Components/Drawers/UpdateAppointment";
 
 function Appointment() {
 	const [appointments, setAppointments] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [open, setOpen] = useState(false);
+	const [selectedAppoinment, setSelectedAppoinment] = useState(null);
+	const [updateOpen, setUpdateOpen] = useState(false);
 
 	const fetchAppointments = async () => {
 		const response = await fetch("http://appointment-app-backend.test/appointments", {
@@ -43,6 +46,8 @@ function Appointment() {
 	return (
 		<>
 			<CreateAppointment open={open} setOpen={setOpen} fetchAppointments={fetchAppointments} />
+
+			<UpdateAppointment open={updateOpen} setOpen={setUpdateOpen} fetchAppointments={fetchAppointments} appointment={selectedAppoinment} />
 
 			<div className="py-10">
 				<header>
@@ -110,15 +115,17 @@ function Appointment() {
 															</td>
 															<td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">
 																{appointment.participants.map((participant) => (
-																	<div key={participant.id}>
-																		{participant.name}<br />
-																		{participant.email}
-																	</div>
+																	<div key={participant.id}>{participant.name}</div>
 																))}
 															</td>
 															<td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">{appointment.start_at} - {appointment.end_at}</td>
 															<td className="relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-0">
-																<button className="text-indigo-600 hover:text-indigo-900">
+																<button
+																	onClick={() => {
+																		setUpdateOpen(true);
+																		setSelectedAppoinment(appointment);
+																	}}
+																	className="text-indigo-600 hover:text-indigo-900 cursor-pointer">
 																	Update<span className="sr-only">, {appointment.title}</span>
 																</button>
 																<button
