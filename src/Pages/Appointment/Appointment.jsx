@@ -119,7 +119,7 @@ function Appointment() {
 															<td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">{appointment.start_at} - {appointment.end_at}</td>
 															<td className="relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-0">
 																<button className="text-indigo-600 hover:text-indigo-900">
-																	Edit<span className="sr-only">, {appointment.title}</span>
+																	Update<span className="sr-only">, {appointment.title}</span>
 																</button>
 																<button
 																	onClick={() => handleDelete(appointment.id, appointment.title)}

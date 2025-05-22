@@ -23,6 +23,23 @@ function Participant() {
 		fetchParticipants();
 	}, []);
 
+	const handleDelete = async (id, name) => {
+		const confirmed = window.confirm(`Are you sure you want to delete this participant "${name}"?`);
+		if (!confirmed) return;
+
+		const response = await fetch(`http://appointment-app-backend.test/participants/${id}`, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+		if (response.ok) {
+			fetchParticipants();
+		} else {
+			alert("Failed to delete participant.");
+		}
+	};
+
 	return (
 		<>
 			<CreateParticipant open={open} setOpen={setOpen} fetchParticipants={fetchParticipants} />
@@ -86,9 +103,12 @@ function Participant() {
 															</td>
 															<td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">{participant.created_at}</td>
 															<td className="relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-0">
-																<a href="#" className="text-indigo-600 hover:text-indigo-900">
-																	Edit<span className="sr-only">, {participant.name}</span>
-																</a>
+																<button
+																	onClick={() => handleDelete(participant.id, participant.name)}
+																	className="text-red-600 hover:text-red-900 bg-transparent border-none cursor-pointer"
+																>
+																	Delete<span className="sr-only">, {participant.title}</span>
+																</button>
 															</td>
 														</tr>
 													))}
