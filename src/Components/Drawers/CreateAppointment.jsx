@@ -2,6 +2,7 @@ import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/re
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router";
+import Select from 'react-select';
 
 function CreateAppointment({ open, setOpen, fetchAppointments }) {
 	const [form, setForm] = useState({
@@ -214,27 +215,23 @@ function CreateAppointment({ open, setOpen, fetchAppointments }) {
 												</label>
 											</div>
 											<div className="sm:col-span-2">
-												<select
-													id="participants"
-													name="participants"
-													multiple
-													required
-													value={form.participants}
+												<Select
+													id="participants-select"
+													isMulti
+													options={participants.map(participant => ({
+														value: participant.id,
+														label: participant.name,
+													}))}
 													onChange={e => {
-														const selected = Array.from(e.target.selectedOptions, option => Number(option.value));
 														setForm(prev => ({
 															...prev,
-															participants: selected,
+															participants: e[0].value,
 														}));
 													}}
-													className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-												>
-													{participants.map(participant => (
-														<option key={participant.id} value={participant.id}>
-															{participant.name} ({participant.email})
-														</option>
-													))}
-												</select>
+													isLoading={loading}
+													isClearable
+													placeholder="Select participants..."
+												/>
 											</div>
 										</div>
 
