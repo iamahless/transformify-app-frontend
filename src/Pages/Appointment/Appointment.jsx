@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import CreateAppointment from "../../Components/CreateAppointment";
+import CreateAppointment from "../../Components/Drawers/CreateAppointment";
 
 function Appointment() {
 	const [appointments, setAppointments] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [open, setOpen] = useState(false);
-
 
 	const fetchAppointments = async () => {
 		const response = await fetch("http://appointment-app-backend.test/appointments", {
@@ -26,7 +25,7 @@ function Appointment() {
 
 	return (
 		<>
-			<CreateAppointment open={open} setOpen={setOpen} />
+			<CreateAppointment open={open} setOpen={setOpen} fetchAppointments={fetchAppointments} />
 
 			<div className="py-10">
 				<header>
