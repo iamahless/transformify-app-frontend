@@ -1,12 +1,47 @@
-# React + Vite
+# Appointment App Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend for the Appointment App, built with React
+```
 
-Currently, two official plugins are available:
+## Prerequisites
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Node.js](https://nodejs.org/) (v16 or higher recommended)
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
 
-## Expanding the ESLint configuration
+## Setup Instructions
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. **Clone the repository:**
+	```bash
+	git clone <repo-url>
+	cd appointment-app-frontend
+	```
+
+2. **Install dependencies:**
+	```bash
+	npm install
+	# or
+	yarn install
+	```
+
+3. **Configure environment variables:**
+	- Copy `.env.example` to `.env` and update values as needed.
+
+4. **Start the development server:**
+	```bash
+	npm run dev
+	# or
+	yarn dev
+	```
+
+5. **Open the app:**
+	- Visit [http://localhost:5173](http://localhost:5173) in your browser.
+
+## Available Scripts
+
+- `npm run dev` — Start development server
+- `npm run build` — Build for production
+- `npm run preview` — Preview production build
+
+## License
+
+MIT
