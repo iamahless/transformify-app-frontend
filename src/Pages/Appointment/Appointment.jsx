@@ -23,6 +23,23 @@ function Appointment() {
 		fetchAppointments();
 	}, []);
 
+	const handleDelete = async (id, title) => {
+		const confirmed = window.confirm(`Are you sure you want to delete the appointment "${title}"?`);
+		if (!confirmed) return;
+
+		const response = await fetch(`http://appointment-app-backend.test/appointments/${id}`, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+		if (response.ok) {
+			fetchAppointments();
+		} else {
+			alert("Failed to delete appointment.");
+		}
+	};
+
 	return (
 		<>
 			<CreateAppointment open={open} setOpen={setOpen} fetchAppointments={fetchAppointments} />
@@ -101,9 +118,15 @@ function Appointment() {
 															</td>
 															<td className="px-3 py-4 text-sm whitespace-nowrap text-gray-500">{appointment.start_at} - {appointment.end_at}</td>
 															<td className="relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-0">
-																<a href="#" className="text-indigo-600 hover:text-indigo-900">
+																<button className="text-indigo-600 hover:text-indigo-900">
 																	Edit<span className="sr-only">, {appointment.title}</span>
-																</a>
+																</button>
+																<button
+																	onClick={() => handleDelete(appointment.id, appointment.title)}
+																	className="pl-3 text-red-600 hover:text-red-900 bg-transparent border-none cursor-pointer"
+																>
+																	Delete<span className="sr-only">, {appointment.title}</span>
+																</button>
 															</td>
 														</tr>
 													))}
@@ -115,8 +138,8 @@ function Appointment() {
 							)}
 						</div>
 					</div>
-				</main>
-			</div>
+				</main >
+			</div >
 		</>
 	);
 }

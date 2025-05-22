@@ -26,34 +26,28 @@ function CreateParticipant({ open, setOpen, fetchParticipants }) {
 		setError(null);
 		setLoading(true);
 
-		try {
-			const response = await fetch("http://appointment-app-backend.test/participants", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					name: form.name,
-					email: form.email,
-				}),
-			});
+		const response = await fetch("http://appointment-app-backend.test/participants", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				name: form.name,
+				email: form.email,
+			}),
+		});
 
-			if (response.ok) {
-				setOpen(false);
+		if (response.ok) {
+			setOpen(false);
 
-				if (fetchParticipants) {
-					await fetchParticipants();
-				}
-
-				navigate("/participants/");
-			} else {
-				const data = await response.json();
-				setError(data?.message || "Failed to create par.");
+			if (fetchParticipants) {
+				await fetchParticipants();
 			}
-		} catch (err) {
-			setError("Network error. Please try again.");
-		} finally {
-			setLoading(false);
+
+			navigate("/participants/");
+		} else {
+			const data = await response.json();
+			setError(data?.message || "Failed to create par.");
 		}
 	};
 

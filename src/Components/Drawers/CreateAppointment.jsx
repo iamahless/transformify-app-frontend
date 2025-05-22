@@ -50,40 +50,35 @@ function CreateAppointment({ open, setOpen, fetchAppointments }) {
 		setError(null);
 		setLoading(true);
 
-		try {
-			const response = await fetch("http://appointment-app-backend.test/appointments", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					title: form.title,
-					description: form.description,
-					scheduler_name: form.schedulerName,
-					scheduler_email: form.schedulerEmail,
-					participants: [1, 2],
-					start_at: formatDateTime(form.startAt),
-					end_at: formatDateTime(form.endAt),
-				}),
-			});
+		const response = await fetch("http://appointment-app-backend.test/appointments", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				title: form.title,
+				description: form.description,
+				scheduler_name: form.schedulerName,
+				scheduler_email: form.schedulerEmail,
+				participants: [1, 2],
+				start_at: formatDateTime(form.startAt),
+				end_at: formatDateTime(form.endAt),
+			}),
+		});
 
-			if (response.ok) {
-				setOpen(false);
+		if (response.ok) {
+			setOpen(false);
 
-				if (fetchAppointments) {
-					await fetchAppointments();
-				}
-
-				navigate("/appointments/");
-			} else {
-				const data = await response.json();
-				setError(data?.message || "Failed to create appointment.");
+			if (fetchAppointments) {
+				await fetchAppointments();
 			}
-		} catch (err) {
-			setError("Network error. Please try again.");
-		} finally {
-			setLoading(false);
+
+			navigate("/appointments/");
+		} else {
+			const data = await response.json();
+			setError(data?.message || "Failed to create appointment.");
 		}
+
 	};
 
 	const today = new Date();

@@ -74,35 +74,32 @@ function MainLayout() {
 		<BrowserRouter>
 			<div className="min-h-full">
 				<Disclosure as="nav" className="border-b border-gray-200 bg-white">
-					{({ open, close }) => (
-						<>
-							<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-								<div className="flex h-16 justify-between">
-									<div className="flex">
-										<div className="flex shrink-0 items-center">
-											<h1>Appointment Scheduler</h1>
-										</div>
-										<div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-											<NavLinks />
-										</div>
-									</div>
-									<div className="-mr-2 flex items-center sm:hidden">
-										<Disclosure.Button className="group relative inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden">
-											<span className="absolute -inset-0.5" />
-											<span className="sr-only">Open main menu</span>
-											<Bars3Icon aria-hidden="true" className="block size-6 group-data-open:hidden" />
-											<XMarkIcon aria-hidden="true" className="hidden size-6 group-data-open:block" />
-										</Disclosure.Button>
-									</div>
+					<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+						<div className="flex h-16 justify-between">
+							<div className="flex">
+								<div className="flex shrink-0 items-center">
+									<h1>Appointment Scheduler</h1>
+								</div>
+								<div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
+									<NavLinks />
 								</div>
 							</div>
-							<Disclosure.Panel className="sm:hidden">
-								<div className="space-y-1 pt-2 pb-3">
-									<MobileNavLinks close={close} />
-								</div>
-							</Disclosure.Panel>
-						</>
-					)}
+							<div className="-mr-2 flex items-center sm:hidden">
+								<Disclosure.Button className="group relative inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden">
+									<span className="absolute -inset-0.5" />
+									<span className="sr-only">Open main menu</span>
+									<Bars3Icon aria-hidden="true" className="block size-6 group-data-open:hidden" />
+									<XMarkIcon aria-hidden="true" className="hidden size-6 group-data-open:block" />
+								</Disclosure.Button>
+							</div>
+						</div>
+					</div>
+					<Disclosure.Panel className="sm:hidden">
+						<div className="space-y-1 pt-2 pb-3">
+							<MobileNavLinks close={close} />
+						</div>
+					</Disclosure.Panel>
+
 				</Disclosure>
 				<Routes>
 					<Route path="/" element={<Home />} />
