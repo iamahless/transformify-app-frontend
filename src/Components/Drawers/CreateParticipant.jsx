@@ -11,6 +11,8 @@ function CreateParticipant({ open, setOpen, fetchParticipants }) {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 
+	const baseUrl = import.meta.env.VITE_API_URL;
+
 	const navigate = useNavigate();
 
 	const handleChange = (e) => {
@@ -26,7 +28,7 @@ function CreateParticipant({ open, setOpen, fetchParticipants }) {
 		setError(null);
 		setLoading(true);
 
-		const response = await fetch("http://appointment-app-backend.test/participants", {
+		const response = await fetch(`${baseUrl}/participants`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",

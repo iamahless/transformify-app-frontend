@@ -18,6 +18,8 @@ function UpdateAppointment({ open, setOpen, fetchAppointments, appointment }) {
 	const [error, setError] = useState(null);
 	const [participants, setParticipants] = useState([]);
 
+	const baseUrl = import.meta.env.VITE_API_URL;
+
 	const navigate = useNavigate();
 
 	const formatDateTime = (dt) => dt.replace('T', ' ');
@@ -40,7 +42,7 @@ function UpdateAppointment({ open, setOpen, fetchAppointments, appointment }) {
 	const fetchParticipants = async () => {
 		setLoading(true);
 		try {
-			const response = await fetch("http://appointment-app-backend.test/participants", {
+			const response = await fetch(`${baseUrl}/participants`, {
 				method: "GET",
 				headers: { "Content-Type": "application/json" },
 			});
@@ -74,7 +76,7 @@ function UpdateAppointment({ open, setOpen, fetchAppointments, appointment }) {
 		setLoading(true);
 
 		try {
-			const response = await fetch(`http://appointment-app-backend.test/appointments/${appointment.id}`, {
+			const response = await fetch(`${baseUrl}/appointments/${appointment.id}`, {
 				method: "PATCH",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({

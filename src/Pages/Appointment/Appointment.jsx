@@ -9,8 +9,10 @@ function Appointment() {
 	const [selectedAppoinment, setSelectedAppoinment] = useState(null);
 	const [updateOpen, setUpdateOpen] = useState(false);
 
+	const baseUrl = import.meta.env.VITE_API_URL;
+
 	const fetchAppointments = async () => {
-		const response = await fetch("http://appointment-app-backend.test/appointments", {
+		const response = await fetch(`${baseUrl}/appointments`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -30,7 +32,7 @@ function Appointment() {
 		const confirmed = window.confirm(`Are you sure you want to delete the appointment "${title}"?`);
 		if (!confirmed) return;
 
-		const response = await fetch(`http://appointment-app-backend.test/appointments/${id}`, {
+		const response = await fetch(`${baseUrl}/appointments/${id}`, {
 			method: "DELETE",
 			headers: {
 				"Content-Type": "application/json",

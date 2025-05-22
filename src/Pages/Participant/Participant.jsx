@@ -6,8 +6,10 @@ function Participant() {
 	const [loading, setLoading] = useState(true);
 	const [open, setOpen] = useState(false);
 
+	const baseUrl = import.meta.env.VITE_API_URL;
+
 	const fetchParticipants = async () => {
-		const response = await fetch("http://appointment-app-backend.test/participants", {
+		const response = await fetch(`${baseUrl}/participants`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -27,7 +29,7 @@ function Participant() {
 		const confirmed = window.confirm(`Are you sure you want to delete this participant "${name}"?`);
 		if (!confirmed) return;
 
-		const response = await fetch(`http://appointment-app-backend.test/participants/${id}`, {
+		const response = await fetch(`${baseUrl}/participants/${id}`, {
 			method: "DELETE",
 			headers: {
 				"Content-Type": "application/json",

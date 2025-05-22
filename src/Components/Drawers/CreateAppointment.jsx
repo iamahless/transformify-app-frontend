@@ -29,6 +29,8 @@ function CreateAppointment({ open, setOpen, fetchAppointments }) {
 	const [participants, setParticipants] = useState([]);
 	const navigate = useNavigate();
 
+	const baseUrl = import.meta.env.VITE_API_URL;
+
 	const participantOptions = useMemo(
 		() => participants.map(({ id, name }) => ({ value: id, label: name })),
 		[participants]
@@ -38,7 +40,7 @@ function CreateAppointment({ open, setOpen, fetchAppointments }) {
 		const fetchParticipants = async () => {
 			setLoading(true);
 			try {
-				const response = await fetch("http://appointment-app-backend.test/participants", {
+				const response = await fetch(`${baseUrl}/participants`, {
 					method: "GET",
 					headers: { "Content-Type": "application/json" },
 				});
@@ -76,7 +78,7 @@ function CreateAppointment({ open, setOpen, fetchAppointments }) {
 		setError(null);
 		setLoading(true);
 		try {
-			const response = await fetch("http://appointment-app-backend.test/appointments", {
+			const response = await fetch(`${baseUrl}/appointments`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
