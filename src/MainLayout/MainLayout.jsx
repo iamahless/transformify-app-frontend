@@ -4,6 +4,7 @@ import { BrowserRouter, Link, Route, Routes, useLocation } from "react-router-do
 
 import Appointment from '../Pages/Appointment/Appointment';
 import Home from "../Pages/Home/Home";
+import Participant from '../Pages/Participant/Participant';
 
 const navigation = [
 	{ name: 'Dashboard', href: '/' },
@@ -106,6 +107,7 @@ function MainLayout() {
 				<Routes>
 					<Route path="/" element={<Home />} />
 					<Route path="/appointments" element={<Appointment />} />
+					<Route path="/participants" element={<Participant />} />
 				</Routes>
 			</div>
 		</BrowserRouter>
