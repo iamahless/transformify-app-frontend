@@ -100,6 +100,7 @@ function CreateAppointment({ open, setOpen, fetchAppointments }) {
 			navigate("/appointments/");
 		} catch (err) {
 			setError(err.message);
+			setLoading(false);
 		} finally {
 			setLoading(false);
 		}

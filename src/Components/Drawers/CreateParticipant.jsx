@@ -3,11 +3,13 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { useNavigate } from "react-router";
 
+const initialFormState = {
+	name: "",
+	email: ""
+};
+
 function CreateParticipant({ open, setOpen, fetchParticipants }) {
-	const [form, setForm] = useState({
-		name: "",
-		email: ""
-	});
+	const [form, setForm] = useState(initialFormState);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 
@@ -21,6 +23,12 @@ function CreateParticipant({ open, setOpen, fetchParticipants }) {
 			...prev,
 			[name]: value,
 		}));
+	};
+
+	const handleClose = () => {
+		setOpen(false);
+		setError(null);
+		setForm(initialFormState);
 	};
 
 	const submitHandle = async (event) => {
@@ -40,15 +48,15 @@ function CreateParticipant({ open, setOpen, fetchParticipants }) {
 		});
 
 		if (response.ok) {
-			setOpen(false);
-
 			if (fetchParticipants) {
 				await fetchParticipants();
 			}
+			handleClose();
 
 			navigate("/participants/");
 		} else {
 			const data = await response.json();
+			setLoading(false);
 			setError(data?.message || "Failed to create par.");
 		}
 	};
